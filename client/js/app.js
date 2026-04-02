@@ -1,3 +1,6 @@
+// Backend API URL (Railway)
+const API_URL = 'https://hopper.proxy.rlwy.net:12345';
+
 // ========================================
 // NOTIFICATION SYSTEM (Global)
 // ========================================
@@ -255,10 +258,8 @@ function enrollNow(courseName) {
 // ========================================
 
 async function loadTestimonials() {
-    if (!testimonialsContainer) return;
-    
     try {
-        const response = await fetch('/api/reviews');
+        const response = await fetch(`${API_URL}/api/reviews`);
         const reviews = await response.json();
         
         if (reviews.length > 0) {
@@ -291,13 +292,7 @@ async function loadTestimonials() {
             `;
         }
     } catch (error) {
-        console.error('Error loading testimonials:', error);
-        testimonialsContainer.innerHTML = `
-            <p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1; padding: 2rem;">
-                <i class="fas fa-comments" style="margin-bottom: 1rem; display: block; font-size: 2rem; opacity: 0.5;"></i>
-                Reviews coming soon!
-            </p>
-        `;
+        console.error('Error loading reviews:', error);
     }
 }
 
@@ -384,7 +379,7 @@ if (reviewForm) {
         }
         
         try {
-            const response = await fetch('/api/reviews', {
+           const response = await fetch(`${API_URL}/api/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
