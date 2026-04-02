@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Web Genius Academy - Learn Web Development, Digital Marketing, and Freelancing with expert-led courses">
+    <meta name="keywords" content="web development, digital marketing, freelancing, online courses, Pakistan">
+    
+    <title>Web Genius Academy</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-brain"></i> Web Genius
+        </div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#courses">Courses</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#testimonials">Reviews</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li class="auth-buttons">
+                <a href="pages/login.html" class="btn-login">Login</a>
+                <a href="pages/signup.html" class="btn-signup">Sign Up</a>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <button id="theme-toggle" aria-label="Toggle dark mode">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div class="hamburger" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Unlock Your <span>Digital Potential</span></h1>
+            <p>Master Web Development, Digital Marketing, and Freelancing with expert-led courses designed for your success. Join thousands of students who transformed their careers.</p>
+            <a href="#courses" class="cta-btn">
+                <i class="fas fa-rocket"></i> Explore Courses
+            </a>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="courses-section">
+        <h2 class="section-title">Our Courses</h2>
+        <p class="section-subtitle">Choose from our industry-leading courses and start your learning journey today</p>
+        <div class="courses-grid" id="course-container">
+            <!-- Courses loaded via JavaScript -->
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="about-content">
+            <h2>Why Choose Web Genius?</h2>
+            <p class="section-subtitle">We're committed to your success with proven teaching methods</p>
+            <div class="features">
+                <div class="feature-card fade-in">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>Practical Learning</h3>
+                    <p>Hands-on projects and real-world scenarios to build your professional portfolio.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <i class="fas fa-certificate"></i>
+                    <h3>Certification</h3>
+                    <p>Earn recognized certificates upon successful completion of each course.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <i class="fas fa-users"></i>
+                    <h3>Community Support</h3>
+                    <p>Join a network of like-minded developers and grow together with peer support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section (Real Reviews) -->
+    <section id="testimonials" class="testimonials-section">
+        <h2 class="section-title">Student Reviews</h2>
+        <p class="section-subtitle">Hear from our successful graduates who transformed their careers</p>
+        <div class="testimonials-grid" id="testimonials-container">
+            <!-- Reviews loaded via JavaScript -->
+        </div>
+        
+        <!-- Add Review Form -->
+        <div class="review-form-container fade-in">
+            <h3>Share Your Experience</h3>
+            <form id="review-form">
+                <div class="form-group">
+                    <label for="review-name">Your Name</label>
+                    <input type="text" id="review-name" name="name" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="review-email">Email Address</label>
+                    <input type="email" id="review-email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="review-course">Course Completed</label>
+                    <select id="review-course" name="course" required>
+                        <option value="">Select a course</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
+                        <option value="WordPress & SEO">WordPress & SEO</option>
+                        <option value="E-commerce">E-commerce</option>
+                        <option value="Freelancing">Freelancing</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="rating-input" id="rating-input">
+                        <span data-rating="1">☆</span>
+                        <span data-rating="2">☆</span>
+                        <span data-rating="3">☆</span>
+                        <span data-rating="4">☆</span>
+                        <span data-rating="5">☆</span>
+                    </div>
+                    <input type="hidden" id="review-rating" name="rating" required>
+                </div>
+                <div class="form-group">
+                    <label for="review-text">Your Review</label>
+                    <textarea id="review-text" name="review" required placeholder="Share your experience with us..."></textarea>
+                </div>
+                <button type="submit" class="cta-btn" style="width: 100%;">
+                    <i class="fas fa-paper-plane"></i> Submit Review
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <h2 class="section-title">Get In Touch</h2>
+        <p class="section-subtitle">Have questions? We're here to help you start your learning journey</p>
+        <div class="contact-container">
+            <form action="https://formspree.io/f/xreoaqrb" method="POST">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <input type="tel" name="phone" placeholder="Phone Number" required>
+                <select name="course" required>
+                    <option value="">Select Course Interest</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Digital Marketing">Digital Marketing</option>
+                    <option value="WordPress & SEO">WordPress & SEO</option>
+                    <option value="E-commerce">E-commerce</option>
+                    <option value="Freelancing">Freelancing</option>
+                </select>
+                <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
+                <button type="submit" class="cta-btn">
+                    <i class="fas fa-paper-plane"></i> Send Message
+                </button>
+            </form>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Prefer instant chat?</p>
+                <a href="https://wa.me/923176942155" class="cta-btn whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+                </a>
+            </div>
+            
+            <div class="social-links">
+                <a href="https://instagram.com/youracademy" class="social-btn instagram" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://facebook.com/youracademy" class="social-btn facebook" aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="mailto:info@webgeniusacademy.com" class="social-btn email" aria-label="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Web Genius Academy</h3>
+                <p>Empowering students with industry-ready digital skills since 2024. Join our community of learners and transform your career.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#home">Home</a>
+                <a href="#courses">Courses</a>
+                <a href="#about">About Us</a>
+                <a href="#testimonials">Reviews</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h3>Courses</h3>
+                <a href="#">Web Development</a>
+                <a href="#">Digital Marketing</a>
+                <a href="#">WordPress & SEO</a>
+                <a href="#">E-commerce</a>
+                <a href="#">Freelancing</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-map-marker-alt"></i> ravi road Lahore, Pakistan</p>
+                <p><i class="fas fa-phone"></i> +92 317 6942155</p>
+                <p><i class="fas fa-envelope"></i> info@webgeniusacademy.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Web Genius Academy. All Rights Reserved. | Made with <i class="fas fa-heart" style="color: #059669;"></i></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+</body>
+</html>

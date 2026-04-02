@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Web Genius Academy</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--bg-color);
+        }
+        .auth-box {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 450px;
+        }
+        .auth-box h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border: 2px solid rgba(5, 150, 105, 0.2);
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition-fast);
+            outline: none;
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+        }
+        .cta-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        .auth-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+        }
+        .auth-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+        .auth-links a:hover {
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-box">
+        <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                <input type="text" id="name" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" placeholder="Create a password" required>
+            </div>
+            <button type="submit" class="cta-btn">
+                <i class="fas fa-user-plus"></i> Sign Up
+            </button>
+        </form>
+        <div class="auth-links">
+            <p>Already have an account? <a href="login.html">Login</a></p>
+            <p><a href="../index.html"><i class="fas fa-arrow-left"></i> Back to Home</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Notification System (Same as login.html)
+        class Notification {
+            constructor() {
+                this.container = null;
+                this.init();
+            }
+            
+            init() {
+                this.container = document.createElement('div');
+                this.container.className = 'notification-container';
+                document.body.appendChild(this.container);
+            }
+            
+            show(type, title, message, duration = 4000) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                const icons = {
+                    success: 'fa-check-circle',
+                    error: 'fa-exclamation-circle',
+                    info: 'fa-info-circle'
+                };
+                
+                notification.innerHTML = `
+                    <div class="notification-icon ${type}">
+                        <i class="fas ${icons[type]}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${title}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                    <button class="notification-close" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                this.container.appendChild(notification);
+                setTimeout(() => notification.classList.add('show'), 10);
+                
+                if (duration > 0) {
+                    setTimeout(() => this.remove(notification), duration);
+                }
+                
+                return notification;
+            }
+            
+            remove(notification) {
+                notification.classList.add('hide');
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 400);
+            }
+            
+            success(title, message) {
+                return this.show('success', title, message);
+            }
+            
+            error(title, message) {
+                return this.show('error', title, message);
+            }
+            
+            info(title, message) {
+                return this.show('info', title, message);
+            }
+        }
+
+        const notification = new Notification();
+
+        // Signup Form Handler
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            submitBtn.disabled = true;
+            
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    notification.success('Account Created!', `Welcome to Web Genius Academy, ${data.user.name}! Your account has been created successfully.`);
+                    
+                    setTimeout(() => {
+                        window.location.href = '../index.html';
+                    }, 1500);
+                } else {
+                    notification.error('Signup Failed', data.msg || 'Email already exists');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (err) {
+                notification.error('Error', 'Failed to connect to server. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
