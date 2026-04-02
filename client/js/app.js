@@ -1,5 +1,5 @@
 // Backend API URL (Railway)
-const API_URL = 'https://hopper.proxy.rlwy.net:12345';
+const API_URL = 'https://web-genius-academy-production.up.railway.app';
 
 // ========================================
 // NOTIFICATION SYSTEM (Global)
