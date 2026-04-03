@@ -1,6 +1,157 @@
 // Backend API URL (Railway)
 const API_URL = 'https://web-genius-academy-production.up.railway.app';
 
+// ===== NOTIFICATION CLASS =====
+class Notification {
+    constructor() {
+        this.container = document.createElement('div');
+        this.container.className = 'notification-container';
+        this.container.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 350px;
+        `;
+        document.body.appendChild(this.container);
+    }
+
+    show(type, title, message) {
+        const notif = document.createElement('div');
+        notif.className = `notification ${type}`;
+        notif.style.cssText = `
+            background: ${type === 'success' ? '#22c55e' : '#ef4444'};
+            color: white;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: slideIn 0.3s ease;
+        `;
+        notif.innerHTML = `
+            <strong style="display:block;font-weight:600">${title}</strong>
+            <span style="display:block;margin-top:4px;font-size:14px">${message}</span>
+        `;
+        
+        setTimeout(() => {
+            notif.style.opacity = '0';
+            notif.style.transition = 'opacity 0.3s';
+            setTimeout(() => notif.remove(), 300);
+        }, 4000);
+        
+        this.container.appendChild(notif);
+    }
+
+    success(t, m) { this.show('success', t, m); }
+    error(t, m) { this.show('error', t, m); }
+}
+
+// Add animation keyframes
+if (!document.getElementById('notif-styles')) {
+    const style = document.createElement('style');
+    style.id = 'notif-styles';
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Create notification instance
+const notification = new Notification();
+
+// ===== WAIT FOR DOM TO LOAD =====
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ===== SIGNUP FORM =====
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await fetch(`${API_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    notification.success('Success', 'Account created! Please login.');
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                } else {
+                    notification.error('Error', data.msg);
+                }
+
+            } catch (err) {
+                notification.error('Error', 'Server not responding');
+                console.error('Signup error:', err);
+            }
+        });
+    }
+
+    // ===== LOGIN FORM =====
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    notification.success('Success', 'Login successful! Welcome back!');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    notification.error('Error', data.msg);
+                }
+
+            } catch (err) {
+                notification.error('Error', 'Server not responding');
+                console.error('Login error:', err);
+            }
+        });
+    }
+
+    // ===== PASSWORD TOGGLE (Optional) =====
+    const togglePassword = document.getElementById('toggle-password');
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const type = password.type === 'password' ? 'text' : 'password';
+            password.type = type;
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+
+});
+
 // ========================================
 // NOTIFICATION SYSTEM (Global)
 // ========================================
