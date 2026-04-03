@@ -1,7 +1,7 @@
-// Backend API URL (Railway)
-const API_URL = 'https://web-genius-academy-production.up.railway.app';
+// ===== API URL =====
+const API_URL = "https://web-genius-academy-production.up.railway.app";
 
-// ===== NOTIFICATION CLASS =====
+// ===== NOTIFICATION CLASS (Single Declaration) =====
 class Notification {
     constructor() {
         this.container = document.createElement('div');
@@ -46,7 +46,7 @@ class Notification {
     error(t, m) { this.show('error', t, m); }
 }
 
-// Add animation keyframes
+// Add animation keyframes (only once)
 if (!document.getElementById('notif-styles')) {
     const style = document.createElement('style');
     style.id = 'notif-styles';
@@ -59,181 +59,10 @@ if (!document.getElementById('notif-styles')) {
     document.head.appendChild(style);
 }
 
-// Create notification instance
+// Global notification instance
 const notification = new Notification();
 
-// ===== WAIT FOR DOM TO LOAD =====
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // ===== SIGNUP FORM =====
-    const signupForm = document.getElementById('signup-form');
-    if (signupForm) {
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const res = await fetch(`${API_URL}/api/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    notification.success('Success', 'Account created! Please login.');
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1500);
-                } else {
-                    notification.error('Error', data.msg);
-                }
-
-            } catch (err) {
-                notification.error('Error', 'Server not responding');
-                console.error('Signup error:', err);
-            }
-        });
-    }
-
-    // ===== LOGIN FORM =====
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const res = await fetch(`${API_URL}/api/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-
-                    notification.success('Success', 'Login successful! Welcome back!');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                } else {
-                    notification.error('Error', data.msg);
-                }
-
-            } catch (err) {
-                notification.error('Error', 'Server not responding');
-                console.error('Login error:', err);
-            }
-        });
-    }
-
-    // ===== PASSWORD TOGGLE (Optional) =====
-    const togglePassword = document.getElementById('toggle-password');
-    if (togglePassword) {
-        togglePassword.addEventListener('click', function() {
-            const password = document.getElementById('password');
-            const type = password.type === 'password' ? 'text' : 'password';
-            password.type = type;
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
-        });
-    }
-
-});
-
-// ========================================
-// NOTIFICATION SYSTEM (Global)
-// ========================================
-
-class Notification {
-    constructor() {
-        this.container = null;
-        this.init();
-    }
-    
-    init() {
-        // Create notification container
-        this.container = document.createElement('div');
-        this.container.className = 'notification-container';
-        document.body.appendChild(this.container);
-    }
-    
-    show(type, title, message, duration = 4000) {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        
-        const icons = {
-            success: 'fa-check-circle',
-            error: 'fa-exclamation-circle',
-            info: 'fa-info-circle'
-        };
-        
-        notification.innerHTML = `
-            <div class="notification-icon ${type}">
-                <i class="fas ${icons[type]}"></i>
-            </div>
-            <div class="notification-content">
-                <div class="notification-title">${title}</div>
-                <div class="notification-message">${message}</div>
-            </div>
-            <button class="notification-close" onclick="this.parentElement.remove()">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
-        
-        this.container.appendChild(notification);
-        
-        // Animate in
-        setTimeout(() => notification.classList.add('show'), 10);
-        
-        // Auto remove after duration
-        if (duration > 0) {
-            setTimeout(() => this.remove(notification), duration);
-        }
-        
-        return notification;
-    }
-    
-    remove(notification) {
-        notification.classList.add('hide');
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.remove();
-            }
-        }, 400);
-    }
-    
-    success(title, message) {
-        return this.show('success', title, message);
-    }
-    
-    error(title, message) {
-        return this.show('error', title, message);
-    }
-    
-    info(title, message) {
-        return this.show('info', title, message);
-    }
-}
-
-// Global notification instance
-window.notification = new Notification();
-
-// ========================================
-// COURSE DATA
-// ========================================
-
+// ===== COURSE DATA =====
 const courses = [
     {
         title: "Web Development",
@@ -285,80 +114,36 @@ const courses = [
     }
 ];
 
-// ========================================
-// DOM ELEMENTS
-// ========================================
+// ===== DOM ELEMENTS (Will be set in DOMContentLoaded) =====
+let themeToggle, hamburger, navLinks, courseContainer, testimonialsContainer, reviewForm, ratingInput, reviewRating;
 
-const themeToggle = document.getElementById('theme-toggle');
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-const courseContainer = document.getElementById('course-container');
-const testimonialsContainer = document.getElementById('testimonials-container');
-const reviewForm = document.getElementById('review-form');
-const ratingInput = document.getElementById('rating-input');
-const reviewRating = document.getElementById('review-rating');
+// ===== HELPER FUNCTIONS =====
 
-// ========================================
-// THEME TOGGLE
-// ========================================
-
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
+function getStarRating(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        stars += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+    }
+    return stars;
 }
 
-function updateThemeIcon(theme) {
-    if (themeToggle) {
-        themeToggle.innerHTML = theme === 'light' 
-            ? '<i class="fas fa-moon"></i>' 
-            : '<i class="fas fa-sun"></i>';
+function enrollNow(courseName) {
+    const isLoggedIn = localStorage.getItem('token');
+    
+    if (isLoggedIn) {
+        notification.success('Enrollment Started!', `You're enrolling in ${courseName}. Redirecting...`);
+        setTimeout(() => { window.location.href = 'pages/signup.html'; }, 1500);
+    } else {
+        notification.info('Account Required', `Please sign up to enroll in ${courseName}`);
+        setTimeout(() => { window.location.href = 'pages/signup.html'; }, 2000);
     }
 }
 
-if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-        notification.info('Theme Changed', `Switched to ${newTheme} mode`);
-    });
-}
-
-// ========================================
-// MOBILE MENU
-// ========================================
-
-if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-        hamburger.innerHTML = navLinks.classList.contains('active')
-            ? '<i class="fas fa-times"></i>'
-            : '<i class="fas fa-bars"></i>';
-    });
-
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-            hamburger.innerHTML = '<i class="fas fa-bars"></i>';
-        });
-    });
-}
-
-// ========================================
-// RENDER COURSES
-// ========================================
-
 function renderCourses() {
     if (!courseContainer) return;
-    
     courseContainer.innerHTML = courses.map((course, index) => `
         <div class="course-card fade-in" style="transition-delay: ${index * 0.1}s">
-            <div class="course-icon">
-                <i class="fas ${course.icon}"></i>
-            </div>
+            <div class="course-icon"><i class="fas ${course.icon}"></i></div>
             <h3>${course.title}</h3>
             <p>${course.description}</p>
             <div class="course-meta">
@@ -373,42 +158,8 @@ function renderCourses() {
     `).join('');
 }
 
-// ========================================
-// ENROLL NOW - WITH NOTIFICATION (NO ALERT)
-// ========================================
-
-function enrollNow(courseName) {
-    // Check if user is logged in
-    const isLoggedIn = localStorage.getItem('token');
-    
-    if (isLoggedIn) {
-        notification.success(
-            'Enrollment Started!',
-            `You're enrolling in ${courseName}. Redirecting to enrollment form...`
-        );
-        
-        // Simulate redirect (you can add actual enrollment logic here)
-        setTimeout(() => {
-            window.location.href = 'pages/signup.html';
-        }, 1500);
-    } else {
-        notification.info(
-            'Account Required',
-            `Please sign up or login to enroll in ${courseName}`
-        );
-        
-        // Redirect to signup after delay
-        setTimeout(() => {
-            window.location.href = 'pages/signup.html';
-        }, 2000);
-    }
-}
-
-// ========================================
-// LOAD TESTIMONIALS
-// ========================================
-
 async function loadTestimonials() {
+    if (!testimonialsContainer) return;
     try {
         const response = await fetch(`${API_URL}/api/reviews`);
         const reviews = await response.json();
@@ -417,49 +168,55 @@ async function loadTestimonials() {
             testimonialsContainer.innerHTML = reviews.map(review => `
                 <div class="testimonial-card fade-in">
                     <div class="testimonial-header">
-                        <div class="testimonial-avatar">
-                            ${review.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div class="testimonial-info">
-                            <h4>${review.name}</h4>
-                            <p>${review.course}</p>
-                        </div>
+                        <div class="testimonial-avatar">${review.name.charAt(0).toUpperCase()}</div>
+                        <div class="testimonial-info"><h4>${review.name}</h4><p>${review.course}</p></div>
                     </div>
-                    <div class="testimonial-rating">
-                        ${getStarRating(review.rating)}
-                    </div>
+                    <div class="testimonial-rating">${getStarRating(review.rating)}</div>
                     <p class="testimonial-text">"${review.review}"</p>
-                    <div class="testimonial-course">
-                        <i class="fas fa-graduation-cap"></i> ${review.course} Graduate
-                    </div>
+                    <div class="testimonial-course"><i class="fas fa-graduation-cap"></i> ${review.course} Graduate</div>
                 </div>
             `).join('');
         } else {
-            testimonialsContainer.innerHTML = `
-                <p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1; padding: 2rem;">
-                    <i class="fas fa-star" style="color: var(--accent-color); margin-bottom: 1rem; display: block; font-size: 2rem;"></i>
-                    Be the first to share your experience!
-                </p>
-            `;
+            testimonialsContainer.innerHTML = `<p style="text-align:center;color:var(--text-secondary);grid-column:1/-1;padding:2rem;"><i class="fas fa-star" style="color:var(--accent-color);margin-bottom:1rem;display:block;font-size:2rem;"></i>Be the first to share your experience!</p>`;
         }
     } catch (error) {
         console.error('Error loading reviews:', error);
     }
 }
 
-function getStarRating(rating) {
-    let stars = '';
-    for (let i = 1; i <= 5; i++) {
-        stars += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
-    }
-    return stars;
+// ===== THEME TOGGLE =====
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
 }
 
-// ========================================
-// REVIEW FORM WITH NOTIFICATIONS
-// ========================================
+function updateThemeIcon(theme) {
+    if (themeToggle) {
+        themeToggle.innerHTML = theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+    }
+}
 
-if (ratingInput) {
+// ===== MOBILE MENU =====
+function initMobileMenu() {
+    if (hamburger && navLinks) {
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.innerHTML = navLinks.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+    }
+}
+
+// ===== REVIEW FORM =====
+function initReviewForm() {
+    if (!reviewForm || !ratingInput) return;
+    
     const stars = ratingInput.querySelectorAll('span');
     let selectedRating = 0;
 
@@ -467,49 +224,17 @@ if (ratingInput) {
         star.addEventListener('click', () => {
             selectedRating = parseInt(star.getAttribute('data-rating'));
             reviewRating.value = selectedRating;
-            
             stars.forEach((s, index) => {
-                if (index < selectedRating) {
-                    s.classList.add('active');
-                    s.innerHTML = '★';
-                } else {
-                    s.classList.remove('active');
-                    s.innerHTML = '☆';
-                }
-            });
-        });
-
-        star.addEventListener('mouseover', () => {
-            const hoverRating = parseInt(star.getAttribute('data-rating'));
-            stars.forEach((s, index) => {
-                if (index < hoverRating) {
-                    s.style.color = 'var(--accent-color)';
-                } else {
-                    s.style.color = '';
-                }
-            });
-        });
-
-        star.addEventListener('mouseout', () => {
-            stars.forEach((s, index) => {
-                if (index < selectedRating) {
-                    s.style.color = 'var(--accent-color)';
-                } else {
-                    s.style.color = '';
-                }
+                if (index < selectedRating) { s.classList.add('active'); s.innerHTML = '★'; }
+                else { s.classList.remove('active'); s.innerHTML = '☆'; }
             });
         });
     });
-}
 
-if (reviewForm) {
     reviewForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
         const submitBtn = reviewForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        
-        // Show loading state
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
         submitBtn.disabled = true;
         
@@ -521,49 +246,32 @@ if (reviewForm) {
             review: document.getElementById('review-text').value
         };
         
-        // Validate rating
         if (!formData.rating) {
-            notification.error('Rating Required', 'Please select a star rating for your review');
+            notification.error('Rating Required', 'Please select a star rating');
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
             return;
         }
         
         try {
-           const response = await fetch(`${API_URL}/api/reviews`, {
+            const response = await fetch(`${API_URL}/api/reviews`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });
-            
             const result = await response.json();
             
             if (response.ok) {
-                notification.success(
-                    'Review Submitted!',
-                    'Thank you for sharing your experience. Your review will appear soon.'
-                );
-                
+                notification.success('Review Submitted!', 'Thank you for sharing your experience.');
                 reviewForm.reset();
                 selectedRating = 0;
-                ratingInput.querySelectorAll('span').forEach(s => {
-                    s.classList.remove('active');
-                    s.innerHTML = '☆';
-                });
-                
-                setTimeout(() => {
-                    loadTestimonials();
-                }, 1000);
+                ratingInput.querySelectorAll('span').forEach(s => { s.classList.remove('active'); s.innerHTML = '☆'; });
+                setTimeout(() => loadTestimonials(), 1000);
             } else {
                 throw new Error(result.message || 'Failed to submit review');
             }
         } catch (error) {
-            notification.error(
-                'Submission Failed',
-                error.message || 'Please try again later'
-            );
+            notification.error('Submission Failed', error.message || 'Please try again later');
         } finally {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
@@ -571,119 +279,33 @@ if (reviewForm) {
     });
 }
 
-// ========================================
-// CONTACT FORM WITH NOTIFICATIONS
-// ========================================
-
-const contactForm = document.getElementById('contact-form');
-if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        // Formspree handles the submission
-        // Show notification on form submit
-        notification.info(
-            'Message Sending...',
-            'Please wait while we send your message'
-        );
-    });
-}
-
-// ========================================
-// SCROLL ANIMATIONS
-// ========================================
-
+// ===== SCROLL & UI EFFECTS =====
 function initScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, observerOptions);
-    
-    document.querySelectorAll('.fade-in').forEach(el => {
-        observer.observe(el);
-    });
+        entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 }
-
-// ========================================
-// NAVBAR SCROLL EFFECT
-// ========================================
 
 function initNavbarScroll() {
     const navbar = document.querySelector('.navbar');
-    
     window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 100) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
+        if (navbar) navbar.classList.toggle('scrolled', window.pageYOffset > 100);
     });
 }
-
-// ========================================
-// SMOOTH SCROLL
-// ========================================
 
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
-            
             const target = document.querySelector(targetId);
-            if (target) {
-                e.preventDefault();
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
         });
     });
 }
 
-// ========================================
-// PAGE LOAD ANIMATION
-// ========================================
-
-function initPageLoad() {
-    window.addEventListener('load', () => {
-        document.body.style.opacity = '0';
-        document.body.style.transition = 'opacity 0.5s ease';
-        
-        setTimeout(() => {
-            document.body.style.opacity = '1';
-        }, 100);
-    });
-}
-
-// ========================================
-// INITIALIZE ALL
-// ========================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    renderCourses();
-    loadTestimonials();
-    initScrollAnimations();
-    initNavbarScroll();
-    initSmoothScroll();
-    initPageLoad();
-    checkLoginStatus();
-    
-    console.log('✅ Web Genius Academy - Initialized Successfully');
-});
-
-// ========================================
-// CHECK LOGIN STATUS & SHOW USERNAME
-// ========================================
-
+// ===== LOGIN STATUS =====
 function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('token');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -691,13 +313,10 @@ function checkLoginStatus() {
     const signupBtn = document.querySelector('.btn-signup');
     
     if (isLoggedIn && user.name && loginBtn && signupBtn) {
-        // Show username
         loginBtn.textContent = `Hi, ${user.name}`;
         loginBtn.href = '#';
         loginBtn.classList.add('username');
         loginBtn.style.cursor = 'default';
-        
-        // Change to Logout
         signupBtn.textContent = 'Logout';
         signupBtn.href = '#';
         signupBtn.onclick = (e) => {
@@ -705,9 +324,114 @@ function checkLoginStatus() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             notification.success('Logged Out', 'See you soon!');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            setTimeout(() => window.location.reload(), 1000);
         };
     }
 }
+
+// ===== DOM READY - MAIN INITIALIZATION =====
+document.addEventListener('DOMContentLoaded', function() {
+    // Set DOM elements
+    themeToggle = document.getElementById('theme-toggle');
+    hamburger = document.querySelector('.hamburger');
+    navLinks = document.querySelector('.nav-links');
+    courseContainer = document.getElementById('course-container');
+    testimonialsContainer = document.getElementById('testimonials-container');
+    reviewForm = document.getElementById('review-form');
+    ratingInput = document.getElementById('rating-input');
+    reviewRating = document.getElementById('review-rating');
+    
+    // Initialize features
+    initTheme();
+    renderCourses();
+    loadTestimonials();
+    initMobileMenu();
+    initReviewForm();
+    initScrollAnimations();
+    initNavbarScroll();
+    initSmoothScroll();
+    checkLoginStatus();
+    
+    // ===== LOGIN FORM =====
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                const res = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    notification.success('Success', 'Login successful! Welcome back!');
+                    setTimeout(() => { window.location.href = window.location.href.includes('pages/') ? '../index.html' : 'index.html'; }, 1500);
+                } else {
+                    notification.error('Error', data.msg);
+                }
+            } catch (err) {
+                notification.error('Error', 'Server not responding');
+                console.error('Login error:', err);
+            }
+        });
+    }
+    
+    // ===== SIGNUP FORM =====
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            try {
+                const res = await fetch(`${API_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    notification.success('Success', 'Account created! Please login.');
+                    setTimeout(() => { window.location.href = window.location.href.includes('pages/') ? 'login.html' : 'pages/login.html'; }, 1500);
+                } else {
+                    notification.error('Error', data.msg);
+                }
+            } catch (err) {
+                notification.error('Error', 'Server not responding');
+                console.error('Signup error:', err);
+            }
+        });
+    }
+    
+    // ===== PASSWORD TOGGLE =====
+    const togglePassword = document.getElementById('toggle-password');
+    if (togglePassword) {
+        togglePassword.addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const type = password.type === 'password' ? 'text' : 'password';
+            password.type = type;
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+    
+    // ===== THEME TOGGLE EVENT =====
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            notification.info('Theme Changed', `Switched to ${newTheme} mode`);
+        });
+    }
+    
+    console.log('✅ Web Genius Academy - Initialized Successfully');
+});
