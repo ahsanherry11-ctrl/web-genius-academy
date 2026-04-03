@@ -1,7 +1,8 @@
 // ===== API URL =====
 const API_URL = "https://web-genius-academy-production.up.railway.app";
+console.log('🔗 API_URL:', API_URL);
 
-// ===== NOTIFICATION CLASS (Single Declaration) =====
+// ===== NOTIFICATION CLASS =====
 class Notification {
     constructor() {
         this.container = document.createElement('div');
@@ -35,8 +36,8 @@ class Notification {
         
         setTimeout(() => {
             notif.style.opacity = '0';
-            notif.style.transition = 'opacity 2.0s';
-            setTimeout(() => notif.remove(), 2000);
+            notif.style.transition = 'opacity 0.3s';
+            setTimeout(() => notif.remove(), 300);
         }, 4000);
         
         this.container.appendChild(notif);
@@ -46,7 +47,7 @@ class Notification {
     error(t, m) { this.show('error', t, m); }
 }
 
-// Add animation keyframes (only once)
+// Add animation keyframes
 if (!document.getElementById('notif-styles')) {
     const style = document.createElement('style');
     style.id = 'notif-styles';
@@ -114,7 +115,7 @@ const courses = [
     }
 ];
 
-// ===== DOM ELEMENTS (Will be set in DOMContentLoaded) =====
+// ===== DOM ELEMENTS =====
 let themeToggle, hamburger, navLinks, courseContainer, testimonialsContainer, reviewForm, ratingInput, reviewRating;
 
 // ===== HELPER FUNCTIONS =====
@@ -140,7 +141,11 @@ function enrollNow(courseName) {
 }
 
 function renderCourses() {
-    if (!courseContainer) return;
+    if (!courseContainer) {
+        console.log('⚠️ courseContainer not found');
+        return;
+    }
+    console.log('✅ Rendering courses...');
     courseContainer.innerHTML = courses.map((course, index) => `
         <div class="course-card fade-in" style="transition-delay: ${index * 0.1}s">
             <div class="course-icon"><i class="fas ${course.icon}"></i></div>
@@ -156,31 +161,71 @@ function renderCourses() {
             </button>
         </div>
     `).join('');
+    console.log('✅ Courses rendered');
 }
 
 async function loadTestimonials() {
-    if (!testimonialsContainer) return;
+    console.log('🔍 loadTestimonials called');
+    
+    if (!testimonialsContainer) {
+        console.error('❌ testimonials-container not found in DOM');
+        return;
+    }
+    
+    console.log('✅ Container found:', testimonialsContainer);
+    
     try {
         const response = await fetch(`${API_URL}/api/reviews`);
+        console.log('📡 Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const reviews = await response.json();
+        console.log('✅ Reviews fetched:', reviews.length, reviews);
         
         if (reviews.length > 0) {
-            testimonialsContainer.innerHTML = reviews.map(review => `
+            testimonialsContainer.innerHTML = reviews.map(review => {
+                return `
                 <div class="testimonial-card fade-in">
                     <div class="testimonial-header">
-                        <div class="testimonial-avatar">${review.name.charAt(0).toUpperCase()}</div>
-                        <div class="testimonial-info"><h4>${review.name}</h4><p>${review.course}</p></div>
+                        <div class="testimonial-avatar">
+                            ${review.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="testimonial-info">
+                            <h4>${review.name}</h4>
+                            <p>${review.course}</p>
+                        </div>
                     </div>
-                    <div class="testimonial-rating">${getStarRating(review.rating)}</div>
+                    <div class="testimonial-rating">
+                        ${getStarRating(review.rating)}
+                    </div>
                     <p class="testimonial-text">"${review.review}"</p>
-                    <div class="testimonial-course"><i class="fas fa-graduation-cap"></i> ${review.course} Graduate</div>
+                    <div class="testimonial-course">
+                        <i class="fas fa-graduation-cap"></i> ${review.course} Graduate
+                    </div>
                 </div>
-            `).join('');
+            `}).join('');
+            
+            console.log('✅ Reviews rendered successfully');
         } else {
-            testimonialsContainer.innerHTML = `<p style="text-align:center;color:var(--text-secondary);grid-column:1/-1;padding:2rem;"><i class="fas fa-star" style="color:var(--accent-color);margin-bottom:1rem;display:block;font-size:2rem;"></i>Be the first to share your experience!</p>`;
+            console.log('⚠️ No reviews found');
+            testimonialsContainer.innerHTML = `
+                <p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1; padding: 2rem;">
+                    <i class="fas fa-star" style="color: var(--accent-color); margin-bottom: 1rem; display: block; font-size: 2rem;"></i>
+                    Be the first to share your experience!
+                </p>
+            `;
         }
     } catch (error) {
-        console.error('Error loading reviews:', error);
+        console.error('❌ Error loading reviews:', error);
+        testimonialsContainer.innerHTML = `
+            <p style="text-align: center; color: var(--text-secondary); grid-column: 1/-1; padding: 2rem;">
+                <i class="fas fa-exclamation-circle" style="margin-bottom: 1rem; display: block; font-size: 2rem;"></i>
+                Unable to load reviews. Please try again later.
+            </p>
+        `;
     }
 }
 
@@ -215,7 +260,10 @@ function initMobileMenu() {
 
 // ===== REVIEW FORM =====
 function initReviewForm() {
-    if (!reviewForm || !ratingInput) return;
+    if (!reviewForm || !ratingInput) {
+        console.log('⚠️ Review form or rating input not found');
+        return;
+    }
     
     const stars = ratingInput.querySelectorAll('span');
     let selectedRating = 0;
@@ -331,6 +379,8 @@ function checkLoginStatus() {
 
 // ===== DOM READY - MAIN INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ DOM Content Loaded - Initializing...');
+    
     // Set DOM elements
     themeToggle = document.getElementById('theme-toggle');
     hamburger = document.querySelector('.hamburger');
@@ -340,6 +390,13 @@ document.addEventListener('DOMContentLoaded', function() {
     reviewForm = document.getElementById('review-form');
     ratingInput = document.getElementById('rating-input');
     reviewRating = document.getElementById('review-rating');
+    
+    console.log('📦 DOM Elements:', {
+        themeToggle: !!themeToggle,
+        hamburger: !!hamburger,
+        courseContainer: !!courseContainer,
+        testimonialsContainer: !!testimonialsContainer
+    });
     
     // Initialize features
     initTheme();
