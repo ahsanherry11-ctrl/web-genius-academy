@@ -5,7 +5,6 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const path = require('path');
 const connectDB = require('./config/db');
 
 const authRoutes = require('./routes/auth');
@@ -19,7 +18,7 @@ connectDB();
 
 const app = express();
 
-// ✅ FIXED CORS Configuration
+// ✅ CORS Configuration
 app.use(cors({
     origin: '*',
     credentials: true,
@@ -35,12 +34,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes);
 
-// Serve frontend static files
-app.use(express.static(path.join(__dirname, '../client')));
-
-// Root route
+// Root route - API status
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/index.html'));
+    res.json({ 
+        message: 'Web Genius Academy API',
+        status: 'Running',
+        endpoints: {
+            auth: '/api/auth',
+            reviews: '/api/reviews'
+        }
+    });
 });
 
 // 404 handler
