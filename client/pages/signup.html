@@ -99,116 +99,56 @@
     </div>
 
     <script>
-        // Notification System (Same as login.html)
-        class Notification {
-            constructor() {
-                this.container = null;
-                this.init();
-            }
-            
-            init() {
-                this.container = document.createElement('div');
-                this.container.className = 'notification-container';
-                document.body.appendChild(this.container);
-            }
-            
-            show(type, title, message, duration = 4000) {
-                const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
-                
-                const icons = {
-                    success: 'fa-check-circle',
-                    error: 'fa-exclamation-circle',
-                    info: 'fa-info-circle'
-                };
-                
-                notification.innerHTML = `
-                    <div class="notification-icon ${type}">
-                        <i class="fas ${icons[type]}"></i>
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-title">${title}</div>
-                        <div class="notification-message">${message}</div>
-                    </div>
-                    <button class="notification-close" onclick="this.parentElement.remove()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                
-                this.container.appendChild(notification);
-                setTimeout(() => notification.classList.add('show'), 10);
-                
-                if (duration > 0) {
-                    setTimeout(() => this.remove(notification), duration);
-                }
-                
-                return notification;
-            }
-            
-            remove(notification) {
-                notification.classList.add('hide');
-                setTimeout(() => {
-                    if (notification.parentElement) {
-                        notification.remove();
-                    }
-                }, 400);
-            }
-            
-            success(title, message) {
-                return this.show('success', title, message);
-            }
-            
-            error(title, message) {
-                return this.show('error', title, message);
-            }
-            
-            info(title, message) {
-                return this.show('info', title, message);
-            }
+const API_URL = "https://web-genius-academy-production.up.railway.app"; // ✅ ADD THIS
+
+class Notification {
+    constructor() {
+        this.container = document.createElement('div');
+        this.container.className = 'notification-container';
+        document.body.appendChild(this.container);
+    }
+
+    show(type, title, message) {
+        alert(title + ": " + message); // simple fallback
+    }
+
+    success(t, m) { this.show('success', t, m); }
+    error(t, m) { this.show('error', t, m); }
+}
+
+const notification = new Notification();
+
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const res = await fetch(`${API_URL}/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+
+            notification.success('Success', 'Account created!');
+            window.location.href = '../index.html';
+        } else {
+            notification.error('Error', data.msg);
         }
 
-        const notification = new Notification();
-
-        // Signup Form Handler
-        document.getElementById('signup-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            const submitBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
-            submitBtn.disabled = true;
-            
-            try {
-               const response = await fetch(`${API_URL}/api/auth/register`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email, password })
-                });
-                const data = await response.json();
-                
-                if (response.ok) {
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    notification.success('Account Created!', `Welcome to Web Genius Academy, ${data.user.name}! Your account has been created successfully.`);
-                    
-                    setTimeout(() => {
-                        window.location.href = '../index.html';
-                    }, 1500);
-                } else {
-                    notification.error('Signup Failed', data.msg || 'Email already exists');
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                }
-            } catch (err) {
-                notification.error('Error', 'Failed to connect to server. Please try again.');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        });
-    </script>
+    } catch (err) {
+        notification.error('Error', 'Server not responding');
+        console.error(err);
+    }
+});
+</script>
 </body>
 </html>

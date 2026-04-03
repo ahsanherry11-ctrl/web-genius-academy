@@ -3,26 +3,36 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Signup Route
+// ✅ SIGNUP (REGISTER)
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
+
     try {
         let user = await User.findOne({ email });
-        if (user) return res.status(400).json({ msg: 'User already exists' });
+        if (user) {
+            return res.status(400).json({ msg: 'User already exists' });
+        }
 
         user = new User({ name, email, password });
         await user.save();
 
         const token = jwt.sign({ id: user.id }, 'secretKey123', { expiresIn: '1h' });
-        res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+
+        res.json({
+            token,
+            user: { id: user.id, name: user.name, email: user.email }
+        });
+
     } catch (err) {
-        res.status(500).send('Server Error');
+        console.error(err);
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
-// Login Route
+// ✅ LOGIN
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
+
     try {
         let user = await User.findOne({ email });
         if (!user) return res.status(400).json({ msg: 'Invalid Credentials' });
@@ -31,9 +41,15 @@ router.post('/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ msg: 'Invalid Credentials' });
 
         const token = jwt.sign({ id: user.id }, 'secretKey123', { expiresIn: '1h' });
-        res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+
+        res.json({
+            token,
+            user: { id: user.id, name: user.name, email: user.email }
+        });
+
     } catch (err) {
-        res.status(500).send('Server Error');
+        console.error(err);
+        res.status(500).json({ msg: 'Server Error' });
     }
 });
 
