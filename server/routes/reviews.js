@@ -12,14 +12,24 @@ const Review = require('../models/Review');
 // @access  Public
 router.get('/', async (req, res) => {
     try {
-        const reviews = await Review.find({ isApproved: true })
-            .sort({ createdAt: -1 })
-            .limit(20);
+        // Flexible query: Fetch reviews where isApproved is true OR field doesn't exist
+        const reviews = await Review.find({
+            $or: [
+                { isApproved: true },
+                { isApproved: { $exists: false } }
+            ]
+        })
+        .sort({ createdAt: -1 })
+        .limit(20);
         
+        console.log(`✅ Fetched ${reviews.length} reviews`);
         res.json(reviews);
     } catch (error) {
-        console.error('Error fetching reviews:', error);
-        res.status(500).json({ message: 'Server error while fetching reviews' });
+        console.error('❌ Error fetching reviews:', error);
+        res.status(500).json({ 
+            message: 'Server error while fetching reviews',
+            error: error.message 
+        });
     }
 });
 
@@ -46,6 +56,8 @@ router.post('/', async (req, res) => {
         
         await newReview.save();
         
+        console.log(`✅ New review submitted by ${name}`);
+        
         res.status(201).json({
             message: 'Review submitted successfully',
             review: {
@@ -56,14 +68,17 @@ router.post('/', async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error submitting review:', error);
+        console.error('❌ Error submitting review:', error);
         
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(err => err.message);
             return res.status(400).json({ message: messages.join(', ') });
         }
         
-        res.status(500).json({ message: 'Server error while submitting review' });
+        res.status(500).json({ 
+            message: 'Server error while submitting review',
+            error: error.message 
+        });
     }
 });
 
