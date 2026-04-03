@@ -1100,7 +1100,6 @@ footer {
     opacity: 1;
     transform: translateY(0);
 }
-
 /* ===== FORCE REVIEWS VISIBILITY ===== */
 
 /* Fix Text Color */
@@ -1119,7 +1118,7 @@ footer {
 
 /* Fix Fade-in Animation Issue */
 .fade-in {
-    opacity: 1 !important; /* Force visible */
+    opacity: 1 !important;
     transform: none !important;
 }
 

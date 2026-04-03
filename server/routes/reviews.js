@@ -1,6 +1,6 @@
 /**
  * Reviews API Routes
- * Handles: Get all reviews, Submit new review
+ * Handles: Get all reviews, Submit new review, Delete review
  */
 
 const express = require('express');
@@ -79,6 +79,25 @@ router.post('/', async (req, res) => {
             message: 'Server error while submitting review',
             error: error.message 
         });
+    }
+});
+
+// @route   DELETE /api/reviews/:id
+// @desc    Delete a review (Admin only)
+// @access  Private/Admin
+router.delete('/:id', async (req, res) => {
+    try {
+        const review = await Review.findByIdAndDelete(req.params.id);
+        
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+        
+        console.log(`✅ Review deleted: ${review.name}`);
+        res.json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        console.error('❌ Error deleting review:', error);
+        res.status(500).json({ message: 'Server error while deleting review' });
     }
 });
 

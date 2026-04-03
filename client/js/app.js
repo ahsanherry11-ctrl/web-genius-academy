@@ -185,6 +185,10 @@ async function loadTestimonials() {
         const reviews = await response.json();
         console.log('✅ Reviews fetched:', reviews.length, reviews);
         
+        // Check if user is admin (simple check - improve for production)
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const isAdmin = user.email === 'ahsanherry11@gmail.com'; // Your email as admin
+        
         if (reviews.length > 0) {
             testimonialsContainer.innerHTML = reviews.map(review => {
                 return `
@@ -197,6 +201,12 @@ async function loadTestimonials() {
                             <h4>${review.name}</h4>
                             <p>${review.course}</p>
                         </div>
+                        ${isAdmin ? `
+                        <button onclick="deleteReview('${review._id}')" 
+                                style="background:#ef4444;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;margin-left:auto;">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                        ` : ''}
                     </div>
                     <div class="testimonial-rating">
                         ${getStarRating(review.rating)}
@@ -226,6 +236,30 @@ async function loadTestimonials() {
                 Unable to load reviews. Please try again later.
             </p>
         `;
+    }
+}
+
+// ===== DELETE REVIEW FUNCTION =====
+async function deleteReview(reviewId) {
+    if (!confirm('Are you sure you want to delete this review?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/api/reviews/${reviewId}`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            notification.success('Deleted!', 'Review has been deleted successfully');
+            loadTestimonials(); // Reload reviews
+        } else {
+            const data = await response.json();
+            notification.error('Error', data.message || 'Failed to delete review');
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        notification.error('Error', 'Failed to delete review');
     }
 }
 
