@@ -35,8 +35,8 @@ class Notification {
         
         setTimeout(() => {
             notif.style.opacity = '0';
-            notif.style.transition = 'opacity 0.3s';
-            setTimeout(() => notif.remove(), 300);
+            notif.style.transition = 'opacity 2.0s';
+            setTimeout(() => notif.remove(), 2000);
         }, 4000);
         
         this.container.appendChild(notif);
