@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Brain Icon (Font Awesome Style) -->
+  <path d="M32 8C20 8 12 18 12 32C12 46 20 56 32 56C44 56 52 46 52 32C52 18 44 8 32 8ZM32 50C24 50 18 43 18 32C18 21 24 14 32 14C40 14 46 21 46 32C46 43 40 50 32 50Z" 
+        fill="url(#gradient)"/>
+  
+  <!-- Brain Left Side -->
+  <path d="M22 24Q26 28 32 30Q26 32 22 38" 
+        fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Brain Right Side -->
+  <path d="M42 24Q38 28 32 30Q38 32 42 38" 
+        fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Brain Center -->
+  <path d="M32 18L32 46" 
+        fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Brain Details -->
+  <circle cx="27" cy="26" r="1.5" fill="white"/>
+  <circle cx="37" cy="26" r="1.5" fill="white"/>
+  <circle cx="27" cy="38" r="1.5" fill="white"/>
+  <circle cx="37" cy="38" r="1.5" fill="white"/>
+</svg>
