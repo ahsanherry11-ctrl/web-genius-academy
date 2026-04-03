@@ -1100,3 +1100,33 @@ footer {
     opacity: 1;
     transform: translateY(0);
 }
+
+/* ===== FORCE REVIEWS VISIBILITY ===== */
+
+/* Fix Text Color */
+.testimonial-card {
+    color: var(--text-primary, #1f2937) !important;
+    background: var(--card-bg, #ffffff) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.testimonial-card h4,
+.testimonial-card p,
+.testimonial-card .testimonial-text {
+    color: var(--text-primary, #1f2937) !important;
+}
+
+/* Fix Fade-in Animation Issue */
+.fade-in {
+    opacity: 1 !important; /* Force visible */
+    transform: none !important;
+}
+
+/* Ensure Grid is Working */
+.testimonials-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 2rem !important;
+    opacity: 1 !important;
+}
