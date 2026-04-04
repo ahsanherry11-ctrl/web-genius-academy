@@ -172,6 +172,7 @@ function enrollNow(courseName) {
     }
 }
 
+// ✅ UPDATED: Removed price from course cards
 function renderCourses() {
     if (!courseContainer) {
         console.log('⚠️ courseContainer not found');
@@ -187,9 +188,6 @@ function renderCourses() {
                 <span><i class="far fa-clock"></i> ${course.duration}</span>
                 <span><i class="fas fa-signal"></i> ${course.level}</span>
                 <span><i class="fas fa-users"></i> ${course.students}</span>
-            </div>
-            <div class="course-price">
-                <strong>${course.price}</strong>
             </div>
             <button class="cta-btn" onclick="enrollNow('${course.title}')">
                 <i class="fas fa-arrow-right"></i> Enroll Now
