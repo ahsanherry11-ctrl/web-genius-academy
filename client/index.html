@@ -9,10 +9,10 @@
     <title>Web Genius Academy</title>
 
     <!-- Favicon -->
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="apple-touch-icon" href="/logo.png">
-<meta name="theme-color" content="#10b981">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/logo.png">
+    <meta name="theme-color" content="#10b981">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,6 +69,60 @@
             <!-- Courses loaded via JavaScript -->
         </div>
     </section>
+
+    <!-- Enrollment Modal -->
+    <div id="enrollment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-graduation-cap"></i> Enroll Now</h2>
+            
+            <div class="course-details">
+                <h3 id="modal-course-name">Course Name</h3>
+                <div class="course-info-grid">
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="modal-course-duration">Duration</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-signal"></i>
+                        <span id="modal-course-level">Level</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-tag"></i>
+                        <span id="modal-course-price">Price</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="enrollment-form" action="https://formspree.io/f/xreoaqrb" method="POST">
+                <input type="hidden" name="course" id="enroll-course-name">
+                
+                <div class="form-group">
+                    <label for="enroll-name"><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="enroll-name" name="name" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="enroll-email"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="enroll-email" name="email" required placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                    <label for="enroll-phone"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="enroll-phone" name="phone" required placeholder="Enter your phone number">
+                </div>
+
+                <div class="form-group">
+                    <label for="enroll-message"><i class="fas fa-comment"></i> Message (Optional)</label>
+                    <textarea id="enroll-message" name="message" rows="3" placeholder="Any questions or special requirements?"></textarea>
+                </div>
+
+                <button type="submit" class="cta-btn" style="width: 100%;">
+                    <i class="fas fa-paper-plane"></i> Submit Enrollment
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- About Section -->
     <section id="about" class="about-section">

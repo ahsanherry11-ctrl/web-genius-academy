@@ -71,6 +71,7 @@ const courses = [
         icon: "fa-code",
         duration: "24 Weeks",
         level: "Beginner to Advanced",
+        price: "PKR 25,000",
         students: "500+"
     },
     {
@@ -79,6 +80,7 @@ const courses = [
         icon: "fa-bullhorn",
         duration: "12 Weeks",
         level: "All Levels",
+        price: "PKR 18,000",
         students: "350+"
     },
     {
@@ -87,6 +89,7 @@ const courses = [
         icon: "fa-wordpress",
         duration: "8 Weeks",
         level: "Beginner",
+        price: "PKR 12,000",
         students: "400+"
     },
     {
@@ -95,6 +98,7 @@ const courses = [
         icon: "fa-shopping-cart",
         duration: "12 Weeks",
         level: "Intermediate",
+        price: "PKR 20,000",
         students: "280+"
     },
     {
@@ -103,6 +107,7 @@ const courses = [
         icon: "fa-desktop",
         duration: "6 Weeks",
         level: "Beginner",
+        price: "PKR 8,000",
         students: "600+"
     },
     {
@@ -111,6 +116,7 @@ const courses = [
         icon: "fa-laptop",
         duration: "6 Weeks",
         level: "All Levels",
+        price: "PKR 10,000",
         students: "450+"
     }
 ];
@@ -128,15 +134,41 @@ function getStarRating(rating) {
     return stars;
 }
 
-function enrollNow(courseName) {
-    const isLoggedIn = localStorage.getItem('token');
+// ===== ENROLLMENT MODAL FUNCTIONS =====
+
+function openEnrollmentModal(course) {
+    const modal = document.getElementById('enrollment-modal');
+    const closeModal = document.querySelector('.close-modal');
     
-    if (isLoggedIn) {
-        notification.success('Enrollment Started!', `You're enrolling in ${courseName}. Redirecting...`);
-        setTimeout(() => { window.location.href = 'pages/signup.html'; }, 1500);
+    // Set course details
+    document.getElementById('modal-course-name').textContent = course.title;
+    document.getElementById('enroll-course-name').value = course.title;
+    document.getElementById('modal-course-duration').textContent = course.duration;
+    document.getElementById('modal-course-level').textContent = course.level;
+    document.getElementById('modal-course-price').textContent = course.price;
+    
+    // Show modal
+    modal.style.display = 'flex';
+    
+    // Close modal
+    closeModal.onclick = () => {
+        modal.style.display = 'none';
+    };
+    
+    // Close on outside click
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
+
+function enrollNow(courseName) {
+    const course = courses.find(c => c.title === courseName);
+    if (course) {
+        openEnrollmentModal(course);
     } else {
-        notification.info('Account Required', `Please sign up to enroll in ${courseName}`);
-        setTimeout(() => { window.location.href = 'pages/signup.html'; }, 2000);
+        notification.error('Error', 'Course not found');
     }
 }
 
@@ -155,6 +187,9 @@ function renderCourses() {
                 <span><i class="far fa-clock"></i> ${course.duration}</span>
                 <span><i class="fas fa-signal"></i> ${course.level}</span>
                 <span><i class="fas fa-users"></i> ${course.students}</span>
+            </div>
+            <div class="course-price">
+                <strong>${course.price}</strong>
             </div>
             <button class="cta-btn" onclick="enrollNow('${course.title}')">
                 <i class="fas fa-arrow-right"></i> Enroll Now
@@ -411,6 +446,17 @@ function checkLoginStatus() {
     }
 }
 
+// ===== ENROLLMENT FORM HANDLER =====
+function initEnrollmentForm() {
+    const enrollmentForm = document.getElementById('enrollment-form');
+    if (enrollmentForm) {
+        enrollmentForm.addEventListener('submit', (e) => {
+            // Formspree will handle the submission
+            notification.info('Enrollment Submitted!', 'We will contact you soon with further details.');
+        });
+    }
+}
+
 // ===== DOM READY - MAIN INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
     console.log('✅ DOM Content Loaded - Initializing...');
@@ -438,6 +484,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadTestimonials();
     initMobileMenu();
     initReviewForm();
+    initEnrollmentForm();
     initScrollAnimations();
     initNavbarScroll();
     initSmoothScroll();
