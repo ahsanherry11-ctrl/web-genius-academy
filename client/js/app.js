@@ -17,7 +17,7 @@ class Notification {
         document.body.appendChild(this.container);
     }
 
-    show(type, title, message) {
+    show(type, title, message, duration = 6000) { // ✅ Increased default to 6 seconds
         const notif = document.createElement('div');
         notif.className = `notification ${type}`;
         notif.style.cssText = `
@@ -34,17 +34,19 @@ class Notification {
             <span style="display:block;margin-top:4px;font-size:14px">${message}</span>
         `;
         
+        // ✅ Increased duration to 6 seconds (was 4 seconds)
         setTimeout(() => {
             notif.style.opacity = '0';
             notif.style.transition = 'opacity 0.3s';
             setTimeout(() => notif.remove(), 300);
-        }, 4000);
+        }, duration);
         
         this.container.appendChild(notif);
     }
 
-    success(t, m) { this.show('success', t, m); }
-    error(t, m) { this.show('error', t, m); }
+    success(t, m) { this.show('success', t, m, 6000); } // ✅ 6 seconds
+    error(t, m) { this.show('error', t, m, 8000); }     // ✅ 8 seconds for errors
+    info(t, m) { this.show('info', t, m, 5000); }       // ✅ 5 seconds for info
 }
 
 // Add animation keyframes
@@ -172,7 +174,6 @@ function enrollNow(courseName) {
     }
 }
 
-// ✅ UPDATED: Removed price from course cards
 function renderCourses() {
     if (!courseContainer) {
         console.log('⚠️ courseContainer not found');
