@@ -17,7 +17,7 @@ class Notification {
         document.body.appendChild(this.container);
     }
 
-    show(type, title, message, duration = 6000) { // ✅ Increased default to 6 seconds
+    show(type, title, message, duration = 6000) {
         const notif = document.createElement('div');
         notif.className = `notification ${type}`;
         notif.style.cssText = `
@@ -34,7 +34,6 @@ class Notification {
             <span style="display:block;margin-top:4px;font-size:14px">${message}</span>
         `;
         
-        // ✅ Increased duration to 6 seconds (was 4 seconds)
         setTimeout(() => {
             notif.style.opacity = '0';
             notif.style.transition = 'opacity 0.3s';
@@ -44,9 +43,9 @@ class Notification {
         this.container.appendChild(notif);
     }
 
-    success(t, m) { this.show('success', t, m, 6000); } // ✅ 6 seconds
-    error(t, m) { this.show('error', t, m, 8000); }     // ✅ 8 seconds for errors
-    info(t, m) { this.show('info', t, m, 5000); }       // ✅ 5 seconds for info
+    success(t, m) { this.show('success', t, m, 6000); }
+    error(t, m) { this.show('error', t, m, 8000); }
+    info(t, m) { this.show('info', t, m, 5000); }
 }
 
 // Add animation keyframes
@@ -445,13 +444,18 @@ function checkLoginStatus() {
     }
 }
 
-// ===== ENROLLMENT FORM HANDLER =====
+// ===== ENROLLMENT FORM HANDLER (UPDATED) =====
 function initEnrollmentForm() {
     const enrollmentForm = document.getElementById('enrollment-form');
     if (enrollmentForm) {
         enrollmentForm.addEventListener('submit', (e) => {
-            // Formspree will handle the submission
-            notification.info('Enrollment Submitted!', 'We will contact you soon with further details.');
+            // Show success notification
+            notification.success('Enrollment Submitted!', 'We will contact you soon with further details. Redirecting to home...');
+            
+            // Redirect to home page after 3 seconds
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
         });
     }
 }
